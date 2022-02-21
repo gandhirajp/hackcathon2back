@@ -3,10 +3,9 @@ const app = express();
 const cors = require("cors")
 const mongodb = require("mongodb")
 const mongoClient = mongodb.MongoClient;
-// const URL = "mongodb+srv://admin:admin123@cluster0.hijj3.mongodb.net?retryWrites=true&w=majority";
-const URL = "mongodb+srv://gandhi:gandhi123@cluster0.e2rdm.mongodb.net?retryWrites=true&w=majority";
-// const URL = "mongodb://localhost:27017";
+ const URL = "mongodb+srv://rental:rental@cluster0.vwqej.mongodb.net/rental?retryWrites=true&w=majority";
 
+// const URL = "mongodb://localhost:27017";
 const bcrypt = require("bcryptjs")
 const jwt=require("jsonwebtoken")  
 
@@ -14,7 +13,7 @@ const secret="Gdc3XkBkRy";
 let usersList = [];
 app.use(express.json())
 
-app.use(cors({  
+app.use(cors({ 
     origin: "*" 
 }))  
 
