@@ -5,7 +5,6 @@ const mongodb = require("mongodb")
 const mongoClient = mongodb.MongoClient;
  const URL = "mongodb+srv://rental:rental@cluster0.vwqej.mongodb.net/rental?retryWrites=true&w=majority";
 
-// const URL = "mongodb://localhost:27017";
 const bcrypt = require("bcryptjs")
 const jwt=require("jsonwebtoken")  
 
@@ -50,36 +49,32 @@ app.post("/register", async function (req, res) {
         connection.close();
         res.json({ message: "user creatrd" });
     } catch (error) {
-        console.log(error)
+        console.log(error) 
     }
 })
 
 // login method start
-app.post("/login", async function (req, res) {
+app.post("/login", async (req, res) => {
     try {
         let connection = await mongoClient.connect(URL);
-        let db = connection.db("rental") 
-
-        let user = await db.collection("users").findOne({ email: req.body.email })
-        if (user) { 
-            let passwordResult = await bcrypt.compare(req.body.password,user.password)
+        let db = connection.db("rental");
+        let user = await db.collection("rental").findOne({ email: req.body.email })
+        if (user) {
+            let passwordResult = await bcrypt.compare(req.body.password, user.password)
             if (passwordResult) {
-                
-                //generate token
-                let token=jwt.sign({userid :user._id},secret,{ expiresIn: '1h' });
-                res.json({token})
+                let token = jwt.sign({ userid: user._id }, secret, { expiresIn: "1h" });
+                res.json({ token })
+            } else {
+                res.status(401).json({ message: "Email Id or Password did not match" })
             }
-            else {  
-                res.status(401).json({ message: "Email id or password Not match" })
-            } 
+        } else {
+            res.status(401).json({ message: "Email Id or Password did not match" })
         }
-        else {
-            res.status(401).json({ message: "Email id or password Not match" })
-        } 
     } catch (error) {
         console.log(error)
     }
 })
+
 // login method end
 
 // user creat  
@@ -87,31 +82,28 @@ app.post("/login", async function (req, res) {
 app.post("/cart", async function (req, res) {
 
     try {
-        //connect to the Database
         let connection = await mongoClient.connect(URL)
 
-        //select DB
+    
         let db = connection.db("rental")
 
-        //select collection
-        //do any operation
+       
         await db.collection("userDetails").insertOne(req.body)
 
-        //close the connection
+      
         connection.close();
 
         res.json({ message: "User Added" })
     } catch (error) { 
         console.log(error) 
     }
-    // req.body.id=usersList.length + 1; 
-    // usersList.push(req.body)
-    // res.json({"mess":"user add"})
+  
 })
 
-// app.get("/dashboard",authenticate,function (req, res) {
-//     res.json({ totalUsers: 30 })
-// })
+app.get("/home", authenticate, function (req, res) {
+    res.json({ authorization : "successful" })
+})
+
 
 app.listen(process.env.PORT || 3001)  //  pocess.env.PORT || this heroku processs 
  
